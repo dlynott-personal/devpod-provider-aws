@@ -9,6 +9,7 @@
         "NO_PROXY": "${localEnv:no_proxy}",
         "NODE_OPTIONS": "--use-openssl-ca"
     },
+    "remoteUser": "collins",
     "remoteEnv": {
         "http_proxy": "${localEnv:http_proxy}",
         "https_proxy": "${localEnv:https_proxy}",
