@@ -27,6 +27,8 @@ var (
 	AWS_USE_ROUTE53                     = "AWS_USE_ROUTE53"
 	AWS_ROUTE53_ZONE_NAME               = "AWS_ROUTE53_ZONE_NAME"
 	CUSTOM_AWS_CREDENTIAL_COMMAND       = "CUSTOM_AWS_CREDENTIAL_COMMAND"
+	PROXY                               = "PROXY"
+	NON_PROXIED_HOSTS                   = "NON_PROXIED_HOSTS"
 )
 
 type Options struct {
@@ -51,6 +53,8 @@ type Options struct {
 	UseRoute53Hostnames        bool
 	Route53ZoneName            string
 	CustomCredentialCommand    string
+	Proxy                      string
+	NonProxiedHosts            string
 }
 
 func FromEnv(init, withFolder bool) (*Options, error) {
@@ -89,6 +93,8 @@ func FromEnv(init, withFolder bool) (*Options, error) {
 	retOptions.KmsKeyARNForSessionManager = os.Getenv(AWS_KMS_KEY_ARN_FOR_SESSION_MANAGER)
 	retOptions.UseRoute53Hostnames = os.Getenv(AWS_USE_ROUTE53) == "true"
 	retOptions.Route53ZoneName = os.Getenv(AWS_ROUTE53_ZONE_NAME)
+	retOptions.Proxy = os.Getenv(PROXY)
+	retOptions.NonProxiedHosts = os.Getenv(NON_PROXIED_HOSTS)
 
 	subnetIDs := os.Getenv(AWS_SUBNET_ID)
 	if subnetIDs != "" {

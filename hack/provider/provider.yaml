@@ -39,6 +39,11 @@ optionGroups:
       - CUSTOM_AWS_CREDENTIAL_COMMAND
     name: "Credential handling options"
     defaultVisible: true
+  - options:
+      - PROXY
+      - NON_PROXIED_HOSTS
+    name: "Docker environment options"
+    defaultVisible: true
 options:
   AWS_REGION:
     suggestions:
@@ -282,6 +287,12 @@ options:
     default: /var/lib/toolbox/devpod
   CUSTOM_AWS_CREDENTIAL_COMMAND:
     description: "Shell command which is executed to get the AWS credentials. The command must return a json containing the keys `AccessKeyID` (required), `SecretAccessKey` (required) and `SessionToken` (optional)."
+    default: ""
+  PROXY:
+    description: Proxy to use for HTTP/S requests from within devcontainer
+    default: ""
+  NON_PROXIED_HOSTS:
+    description: Comma-separated list of hosts to exclude from the proxy
     default: ""
 agent:
   path: ${AGENT_PATH}

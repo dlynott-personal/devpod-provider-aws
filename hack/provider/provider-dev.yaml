@@ -32,6 +32,11 @@ optionGroups:
       - INJECT_GIT_CREDENTIALS
     name: "Agent options"
     defaultVisible: false
+  - options:
+      - PROXY
+      - NON_PROXIED_HOSTS
+    name: "Docker environment options"
+    defaultVisible: true
 options:
   AWS_REGION:
     suggestions:
@@ -263,6 +268,12 @@ options:
   AGENT_PATH:
     description: The path where to inject the DevPod agent to.
     default: /var/lib/toolbox/devpod
+  PROXY:
+    description: Proxy to use for HTTP/S requests from within devcontainer
+    default: ""
+  NON_PROXIED_HOSTS:
+    description: Comma-separated list of hosts to exclude from the proxy
+    default: ""
 agent:
   path: ${AGENT_PATH}
   inactivityTimeout: ${INACTIVITY_TIMEOUT}
@@ -272,12 +283,12 @@ agent:
     AWS_PROVIDER:
       - os: linux
         arch: amd64
-        path: ##PROJECT_ROOT##/release/devpod-provider-aws-linux-amd64
-        checksum: ##CHECKSUM_LINUX_AMD64##
+        path: https://github.com/loft-sh/devpod-provider-aws/releases/download/v0.0.16/devpod-provider-aws-linux-amd64
+        checksum: d263d360738eb789c2b6aa14d5d8d806a13b2eaea1ec1eba4e8f3ed27eae1dc7
       - os: linux
         arch: arm64
-        path: ##PROJECT_ROOT##/release/devpod-provider-aws-linux-arm64
-        checksum: ##CHECKSUM_LINUX_ARM64##
+        path: https://github.com/loft-sh/devpod-provider-aws/releases/download/v0.0.16/devpod-provider-aws-linux-arm64
+        checksum: dc57a2dbac9e0740a447a97d92b3a1ad3d11ed1fbb312df037635f4081d48ed8
   exec:
     shutdown: |-
       ${AWS_PROVIDER} stop || shutdown
@@ -293,7 +304,7 @@ binaries:
       checksum: ##CHECKSUM_LINUX_ARM64##
     - os: darwin
       arch: amd64
-      path: ##PROJECT_ROOT##/releasedevpod-provider-aws-darwin-amd64
+      path: ##PROJECT_ROOT##/release/devpod-provider-aws-darwin-amd64
       checksum: ##CHECKSUM_DARWIN_AMD64##
     - os: darwin
       arch: arm64
@@ -301,7 +312,7 @@ binaries:
       checksum: ##CHECKSUM_DARWIN_ARM64##
     - os: windows
       arch: amd64
-      path: ##PROJECT_ROOT##/release/devpod-provider-kubernetes-windows-amd64.exe
+      path: ##PROJECT_ROOT##/release/devpod-provider-aws-windows-amd64.exe
       checksum: ##CHECKSUM_WINDOWS_AMD64##
 exec:
   init: ${AWS_PROVIDER} init

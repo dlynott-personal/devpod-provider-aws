@@ -789,6 +789,11 @@ func Create(
 		return Machine{}, err
 	}
 
+	userData, err = getInjectDockerConfigScript(providerAws.Config, userData)
+	if err != nil {
+		return Machine{}, err
+	}
+
 	var r53Zone route53Zone
 	if providerAws.Config.UseRoute53Hostnames {
 		r53Zone, err = GetDevpodRoute53Zone(ctx, providerAws)
@@ -977,7 +982,26 @@ mkdir -p /home/devpod/.ssh
 echo "` + string(publicKey) + `" >> /home/devpod/.ssh/authorized_keys
 chmod 0700 /home/devpod/.ssh
 chmod 0600 /home/devpod/.ssh/authorized_keys
-chown -R devpod:devpod /home/devpod`
+chown -R devpod:devpod /home/devpod
+`
 
 	return base64.StdEncoding.EncodeToString([]byte(resultScript)), nil
+}
+
+func getInjectDockerConfigScript(config *options.Options, encodedScript string) (string, error) {
+	proxy, noproxy := config.Proxy, config.NonProxiedHosts
+	if proxy != "" {
+		decodedScript, _ := base64.StdEncoding.DecodeString(encodedScript)
+		value := string(decodedScript) + `
+mkdir -p /etc/systemd/system/docker.service.d
+cat << EOF > /etc/systemd/system/docker.service.d/proxy.conf
+[Service]
+Environment="http_proxy=` + proxy + `"
+Environment="https_proxy=` + proxy + `"
+Environment="no_proxy=` + noproxy + `"
+EOF
+`
+		return base64.StdEncoding.EncodeToString([]byte(value)), nil
+	}
+	return encodedScript, nil
 }

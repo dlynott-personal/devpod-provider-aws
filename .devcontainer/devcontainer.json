@@ -1,0 +1,40 @@
+{
+    "image":"artifactory-us-ltd.collins.com/es-i-docker-local/golang-devcontainer:latest",
+    "containerEnv": {
+        "http_proxy": "${localEnv:http_proxy}",
+        "https_proxy": "${localEnv:https_proxy}",
+        "no_proxy": "${localEnv:no_proxy}",
+        "HTTP_PROXY": "${localEnv:http_proxy}",
+        "HTTPS_PROXY": "${localEnv:https_proxy}",
+        "NO_PROXY": "${localEnv:no_proxy}",
+        "NODE_OPTIONS": "--use-openssl-ca"
+    },
+    "remoteEnv": {
+        "http_proxy": "${localEnv:http_proxy}",
+        "https_proxy": "${localEnv:https_proxy}",
+        "no_proxy": "${localEnv:no_proxy}",
+        "HTTP_PROXY": "${localEnv:http_proxy}",
+        "HTTPS_PROXY": "${localEnv:https_proxy}",
+        "NO_PROXY": "${localEnv:no_proxy}",
+        "HOST_WORKSPACE": "${localWorkspaceFolder}"
+    },
+    "runArgs": [
+        "--rm",
+        "-e http_proxy=${localEnv:http_proxy}",
+        "-e https_proxy=${localEnv:https_proxy}",
+        "-e no_proxy=${localEnv:no_proxy}",
+        "-e HTTP_PROXY=${localEnv:http_proxy}",
+        "-e HTTPS_PROXY=${localEnv:https_proxy}",
+        "-e NO_PROXY=${localEnv:no_proxy}"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "golang.go"
+            ]
+        }
+    },
+    "mounts": [
+        "source=${localEnv:HOME}/.aws,target=/home/collins/.aws,type=bind,consistency=cached"
+    ]
+}

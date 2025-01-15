@@ -19,6 +19,9 @@ if [[ "$(pwd)" != "${PROVIDER_ROOT}" ]]; then
   exit 1
 fi
 
+# Override because I'm working out of a container
+OVERRIDDEN_PROVIDER_ROOT="${HOST_WORKSPACE}"
+
 GO_BUILD_CMD="go build"
 GO_BUILD_LDFLAGS="-s -w"
 
@@ -70,4 +73,4 @@ for OS in ${PROVIDER_BUILD_PLATFORMS[@]}; do
 done
 
 # generate provider.yaml
-GITHUB_OWNER=${GITHUB_OWNER:-"loft-sh"} go run -mod vendor "${PROVIDER_ROOT}/hack/provider/main.go" ${RELEASE_VERSION} ${BUILD_VERSION} ${PROVIDER_ROOT} > "${PROVIDER_ROOT}/release/provider.yaml"
+GITHUB_OWNER=${GITHUB_OWNER:-"loft-sh"} go run -mod vendor "${PROVIDER_ROOT}/hack/provider/main.go" ${RELEASE_VERSION} ${BUILD_VERSION} ${OVERRIDDEN_PROVIDER_ROOT} > "${PROVIDER_ROOT}/release/provider.yaml"
