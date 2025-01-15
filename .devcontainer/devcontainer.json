@@ -35,5 +35,6 @@
             ]
         }
     },
+    "postCreateCommand": "./.devcontainer/setup-gopath.sh",
     "mounts": [ ]
 }
