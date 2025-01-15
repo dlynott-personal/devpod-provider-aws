@@ -34,7 +34,5 @@
             ]
         }
     },
-    "mounts": [
-        "source=${localEnv:HOME}/.aws,target=/home/collins/.aws,type=bind,consistency=cached"
-    ]
+    "mounts": [ ]
 }
