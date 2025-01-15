@@ -6,7 +6,9 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"os/exec"
 	"regexp"
 	"sort"
@@ -794,6 +796,14 @@ func Create(
 		return Machine{}, err
 	}
 
+	userData, err = getInjectCustomUserDataScript(providerAws.Config, userData)
+	if err != nil {
+		return Machine{}, err
+	}
+
+	decodedValue, _ := base64.StdEncoding.DecodeString(userData)
+	fmt.Println("Final UserData script: ", string(decodedValue))
+
 	var r53Zone route53Zone
 	if providerAws.Config.UseRoute53Hostnames {
 		r53Zone, err = GetDevpodRoute53Zone(ctx, providerAws)
@@ -1002,6 +1012,29 @@ Environment="no_proxy=` + noproxy + `"
 EOF
 `
 		return base64.StdEncoding.EncodeToString([]byte(value)), nil
+	}
+	return encodedScript, nil
+}
+
+func getInjectCustomUserDataScript(config *options.Options, encodedScript string) (string, error) {
+	userDataScriptPath := config.UserDataScript
+	if userDataScriptPath != "" {
+		file, err := os.Open(userDataScriptPath)
+		if err == nil {
+			defer file.Close()
+			content, err := io.ReadAll(file)
+			if err == nil {
+				decodedScript, _ := base64.StdEncoding.DecodeString(encodedScript)
+				userDataScript := string(decodedScript) + `\n` + string(content)
+				return base64.StdEncoding.EncodeToString([]byte(userDataScript)), nil
+			} else {
+				fmt.Println("Unable to read UserDataScript content: ", userDataScriptPath)
+			}
+		} else {
+			fmt.Println("Unable to open UserDataScript: ", userDataScriptPath)
+		}
+	} else {
+		fmt.Println("UserDataScript was not configured.")
 	}
 	return encodedScript, nil
 }

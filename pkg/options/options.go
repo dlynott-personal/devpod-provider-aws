@@ -29,6 +29,7 @@ var (
 	CUSTOM_AWS_CREDENTIAL_COMMAND       = "CUSTOM_AWS_CREDENTIAL_COMMAND"
 	PROXY                               = "PROXY"
 	NON_PROXIED_HOSTS                   = "NON_PROXIED_HOSTS"
+	USER_DATA_SCRIPT                    = "USER_DATA_SCRIPT"
 )
 
 type Options struct {
@@ -55,6 +56,7 @@ type Options struct {
 	CustomCredentialCommand    string
 	Proxy                      string
 	NonProxiedHosts            string
+	UserDataScript             string
 }
 
 func FromEnv(init, withFolder bool) (*Options, error) {
@@ -95,6 +97,7 @@ func FromEnv(init, withFolder bool) (*Options, error) {
 	retOptions.Route53ZoneName = os.Getenv(AWS_ROUTE53_ZONE_NAME)
 	retOptions.Proxy = os.Getenv(PROXY)
 	retOptions.NonProxiedHosts = os.Getenv(NON_PROXIED_HOSTS)
+	retOptions.UserDataScript = os.Getenv(USER_DATA_SCRIPT)
 
 	subnetIDs := os.Getenv(AWS_SUBNET_ID)
 	if subnetIDs != "" {

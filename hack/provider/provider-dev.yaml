@@ -23,6 +23,7 @@ optionGroups:
       - AWS_USE_SPOT_INSTANCE
       - AWS_USE_SESSION_MANAGER
       - AWS_KMS_KEY_ARN_FOR_SESSION_MANAGER
+      - USER_DATA_SCRIPT
     name: "AWS options"
     defaultVisible: false
   - options:
@@ -273,6 +274,9 @@ options:
     default: ""
   NON_PROXIED_HOSTS:
     description: Comma-separated list of hosts to exclude from the proxy
+    default: ""
+  USER_DATA_SCRIPT:
+    description: Full path to a file containing shell script to append to the UserData section of an AMI during launch
     default: ""
 agent:
   path: ${AGENT_PATH}

@@ -13,7 +13,7 @@ if [ -n "${HOST_WORKSPACE}" ]; then
     exit 1
 fi
 
-PROVIDER_ID='aws-collins-sae'
+PROVIDER_ID=${PROVIDER_ID:-aws-collins-sae}
 echo "[INFO] Removing existing provider name: ${PROVIDER_ID}"
 devpod provider delete "${PROVIDER_ID}" > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
@@ -33,14 +33,22 @@ devpod provider add ./release/provider.yaml \
     --name "${PROVIDER_ID}" --debug \
     -o AWS_PROFILE="${AWS_PROFILE}" \
     -o AWS_REGION="${AWS_REGION}" \
-    -o PROXY=http://proxy.rockwellcollins.com:9092 \
-    -o NON_PROXIED_HOSTS=localhost,127.0.0.1,169.254.169.254 \
     -o AWS_AMI=ami-073452aab5109d24e \
     -o AWS_INSTANCE_TYPE=t2.large \
     -o AWS_SUBNET_ID=subnet-0569d0f531581c0d9 \
     -o AWS_VPC_ID=vpc-0de2ba291d3dcd721 \
     -o AWS_DISK_SIZE=30 \
-    -o AWS_ROOT_DEVICE=/dev/sda1
+    -o AWS_ROOT_DEVICE=/dev/sda1 \
+    -o PROXY=http://proxy.rockwellcollins.com:9090 \
+    -o NON_PROXIED_HOSTS=localhost,127.0.0.1,169.254.169.254
 
+read -p "Configure with a custom AMI UserData? [y/N]"
+REPLY=${REPLY:-n}
+if [ "${REPLY}" == 'y' ]; then
+    read -p "Enter FULL path to script to append to AMI UserData: "
+    if [ -n "${REPLY}" ]; then
+        devpod provider update "${PROVIDER_ID}" --debug -o USER_DATA_SCRIPT="${REPLY}"
+    fi
+fi
 echo "[INFO] Settings for your provider: ${PROVIDER_ID}"
 devpod provider options
